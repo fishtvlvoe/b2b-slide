@@ -8,8 +8,8 @@ AI 商務簡報，透過一題一問訪談做出原生可編輯的 PPTX。
 
 - **自己的電腦**：支援 Mac（macOS）或 Windows 作業系統。
 - **一個能讀寫電腦檔案的 AI 工具**：
-  - 推薦 Claude 電腦版 App（https://claude.ai/download ），已完整實測。
-  - Codex、Antigravity 等能在電腦上執行程式的 AI 工具，也能用同一句話安裝與使用，但尚未完整實測。
+  - 推薦 Claude 電腦版 App（https://claude.ai/download ），已完整實測；Antigravity 也已完整實測。
+  - Codex 等其他能在電腦上執行程式的 AI 工具，也能用同一句話安裝與使用，但尚未完整實測。
   - 特別提醒：網頁版、手機版的 AI 聊天都不能用（包含 Claude、ChatGPT 的網頁版）。本工具需要在你的電腦上讀寫檔案、執行程式。
 - **Python 3.10 以上版本**：請至官方頁面下載安裝：https://www.python.org/downloads/ （Windows 安裝時請務必勾選「Add Python to PATH」）。
 
