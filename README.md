@@ -6,7 +6,7 @@ AI 商務簡報，透過一題一問訪談做出原生可編輯的 PPTX。
 
 ## 你需要具備的環境
 
-- **自己的電腦**：支援 Mac（macOS）或 Windows 作業系統。
+- **自己的電腦**：支援 Mac（macOS，已實測）；Windows 版尚未實測，遇到問題請在 GitHub 回報。
 - **一個能讀寫電腦檔案的 AI 工具**：
   - 推薦 Claude 電腦版 App（https://claude.ai/download ），已完整實測；Antigravity 也已完整實測。
   - Codex 等其他能在電腦上執行程式的 AI 工具，也能用同一句話安裝與使用，但尚未完整實測。
@@ -31,7 +31,7 @@ AI 商務簡報，透過一題一問訪談做出原生可編輯的 PPTX。
 curl -fsSL https://raw.githubusercontent.com/fishtvlvoe/b2b-slide/main/install.sh | bash
 ```
 
-**Windows（打開 PowerShell 執行）：**
+**Windows（打開 PowerShell 執行，尚未實測）：**
 
 ```powershell
 irm https://raw.githubusercontent.com/fishtvlvoe/b2b-slide/main/install.ps1 | iex
