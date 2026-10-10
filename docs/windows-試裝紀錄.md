@@ -76,3 +76,14 @@ irm https://fishtvlvoe.github.io/b2b-slide/install.ps1 | iex
 5. **若發生錯誤**：
    - 複製 PowerShell 視窗紅字錯誤訊息全文。
    - 註明卡在哪一個步驟（下載 repo / 下載 ppt-master / 安裝套件 / 自我測試）。
+
+## 額外檢查：pip 是否能用（2026-10-10 加入）
+
+macOS 版已修正「安裝後 pip 指向暫存資料夾」的問題，Windows 版未實測。安裝完成後請在 PowerShell 執行：
+
+```powershell
+& "$env:USERPROFILE\.b2b-slide\venv\Scripts\pip.exe" --version
+```
+
+- 正常：顯示 `pip 版本號 from ...\.b2b-slide\venv\...`
+- 異常：出現找不到 `.b2b-slide.new` 或無法執行的錯誤 → 把錯誤全文回報（做簡報流程不會用到 pip，但更新時會用到）
