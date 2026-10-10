@@ -1,0 +1,8 @@
+# Spectra app data
+.spectra/
+
+# Local cache
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/

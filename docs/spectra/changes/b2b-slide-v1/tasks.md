@@ -1,0 +1,36 @@
+## 1. 基礎：鎖版與資料夾結構
+
+- [x] 1.1 ppt-master 鎖版實測（對應設計「學生只拿 b2b-slide 一個 repo，ppt-master 安裝時自動下載並鎖定上游 tag」、需求「Pinned ppt-master version」）：在 scratch 資料夾分別 checkout 上游 `v4.5.0` 與 `v6.7.0`，各用同一份 BNI 案例中繼稿產出 3 頁，記錄耗時；選定能產出 PPTX、文字框可編輯、每頁有講者備忘錄、`confirm_ui` 與 `svg_editor` 都能啟動的版本，寫入 `ppt-master.lock`（`tag=<版本>`）。驗證：`python3 -c` 用 python-pptx 讀回兩版產出的檢查輸出，加上兩個預覽服務的 `curl -o /dev/null -w "%{http_code}"` 結果，選定理由寫進 `docs/ppt-master-選版紀錄.md`
+- [x] 1.2 建立 repo 骨架，落實設計「學生的工作資料夾與開發檔案分開」：`agent/`（流程與題庫）、`templates/workspace/`（學生工作資料夾的 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`，三份都只寫「讀 `~/.b2b-slide/agent/流程.md` 並照做」）、`scripts/`、`site/`；根目錄 5 份規格文件移到 `docs/規格/`，並把 `AGENTS.md` 內 4 個指向舊資料夾 `b2b-presentation-agent` 的 `file:///` 絕對連結改成相對連結。驗證：`find . -maxdepth 2 -not -path './.git*'` 輸出符合上述結構，`grep -rn b2b-presentation-agent . --exclude-dir=.git` 0 筆，且 `templates/workspace/` 三份入口檔內容不含任何 Spectra 字樣（`grep -ri spectra templates/` 0 筆）
+
+## 2. 訪談引擎
+
+- [x] 2.1 [after: 1.2] 撰寫 `agent/流程.md` 主流程，落實設計「訪談引擎沿用 writing-assistant 的一題一問與破例感官」：包含需求「Presentation type selection」（4 種類型、不支援類型時說明第一版範圍並停止）、「One question per message」（每回合送出前自我檢查問號數 ≤ 1、不給選項）、「Five-phase state machine」（5 階段固定順序）、「No one-click generation」（拒絕並回到目前題目）。驗證：用 Claude Code 在空的工作資料夾跑一次，輸入「部門月報」應停止並說明範圍、輸入「直接幫我生成整份」應拒絕，逐字稿存 `docs/驗收/2.1-逐字稿.md`，人工核對每則 Agent 訊息問號數
+- [x] 2.2 [after: 2.1] 撰寫 `agent/題庫.md`，落實設計「四步法第 4 步依簡報類型換說法」：需求「Type-specific step four」（4 種類型的第 5 階段問法）、「Concrete noun-and-verb follow-up」（抽象形容詞觸發追問）、「Eight-lens rotation with follow-up cap」（8 切角輪換、每階段最多追問 3 次後改為摘要確認）。驗證：4 種類型各跑到第 5 階段一次，確認問法符合 spec 對照表；另用連續 3 次模糊回答，確認第 4 次改為摘要確認，逐字稿存 `docs/驗收/2.2-逐字稿.md`
+- [x] 2.3 [after: 1.2] 擴充 `scripts/check_transcript.py` 支援 grilling 規則（先在 `scripts/test_check_transcript.py` 加紅燈測試並確認失敗，再實作），落實需求「Round mode on request」「Grounded recommended answers」「Phase-end active edit」：逐字稿可用 `<!-- mode: round -->` 標註一輪一批，此時允許多題但每題要編號且各自帶 `➡️` 建議答案；第 1 則 Agent 提問不得帶 `➡️`；標註 `<!-- phase-end -->` 的摘要訊息後，若使用者只回「對／好／OK／沒問題」，下一則 Agent 訊息不得進入下一階段。新增測試至少：`test_round_mode_allows_numbered_questions`、`test_round_question_missing_recommendation`、`test_first_question_has_no_recommendation`、`test_bare_acceptance_blocks_phase_end`。驗證：`python3 -m pytest scripts/test_check_transcript.py` 全綠且原有 3 個測試未修改
+- [x] 2.4 [after: 2.2, 2.3] 依設計「訪談採 grilling 方式：建議答案只用學生自己的話」與「預設一次一題，學生可切換成一輪一批」改寫 `agent/流程.md` 與 `agent/題庫.md`：需求「Grounded recommended answers」（第二題起附 ➡️ 建議、只能用學生講過的話或檔案內容、無素材不附）、「Round mode on request」（切換句、編號格式、同一輪不放互相依賴的題目、可切回）、「Phase-end active edit」（階段摘要後要求至少改一字或補一句）、「Provided files read before asking」（先讀學生檔案、記錄已回答欄位、不重問）。驗證：PM 用 Claude Code 以 BNI 案例實跑兩次（一次一題、一輪一批各一次，其中一次附一份假報價單），逐字稿存 `docs/驗收/2.4-逐字稿-*.md`，`python3 scripts/check_transcript.py` 兩份皆 exit 0，並人工核對每個建議答案的內容都能在使用者前文或檔案中找到出處
+- [x] 2.5 [after: 2.4] 依第一次對話驗收（`~/Downloads/b2b-slide-驗收/2.4-對話驗收-第1次/`）修正，落實需求「Faithful transcript and quoted echoes」與修訂後的「Round mode on request」「Grounded recommended answers」：(a) `check_transcript.py` 的「第一題不可附建議」改為檢查第一個被問的題目（單題訊息或 round 的 Q1），不是整則訊息；(b) round 模式接受 `➡️（無素材，不附建議）` 標記；(c) 「」內的問號不計入問題數；(d) `agent/流程.md` 規定逐字稿逐字照抄送出的訊息、摘要引用使用者原話一律加「」、中繼稿標題也只能用使用者素材不准自加主張（第一次驗收 P05 出現使用者沒講過的「不是先挑風格」）。先為 (a)(b)(c) 各加一個紅燈測試再實作。驗證：`python3 -m pytest scripts/test_check_transcript.py` 全綠且原有測試未改；用修正後的檢查程式重跑第一次驗收的晨曦會計逐字稿應 exit 0；PM 重跑一次 BNI 一次一題對話，逐字稿 exit 0
+
+## 3. 中繼稿與故事地圖
+
+- [x] 3.1 [after: 1.2] 撰寫 `agent/中繼稿範本.md` 與檢查腳本 `scripts/check_ssot.py`（先寫測試 `scripts/test_check_ssot.py` 並確認失敗），落實需求「SSOT file location and structure」、「Required field gate」（缺欄位列出缺哪一欄並回傳非 0）、「Four-step order in slide plan」（結論 → 問題 → 做法 → 第 4 步順序錯誤時報錯）；在 `agent/流程.md` 寫入「Explicit user confirmation」規則（使用者明說確認才往下）。驗證：`python3 -m pytest scripts/test_check_ssot.py` 全綠，測試涵蓋 spec 範例表的 3 種欄位狀態與順序錯誤
+- [x] 3.2 [after: 3.1] 撰寫 `scripts/story_map.py`（先寫測試 `scripts/test_story_map.py`），落實設計「HTML 故事地圖放在中繼 Markdown 拍板之後、樣品之前」與需求「Story map generation」：讀 `01-中繼-SSOT.md` 產出 `02-故事地圖.html`（淺色底、SVG 圖示、無 Emoji，頁數與順序和中繼稿一致）；需求「Open in browser with text fallback」（開瀏覽器失敗時仍印出純文字頁序）；需求「Order changes flow back to SSOT」寫進 `agent/流程.md`（改順序先改中繼稿再重產地圖）。驗證：`python3 -m pytest scripts/test_story_map.py` 全綠，加上用 ego-browser 截圖 BNI 案例故事地圖存 `docs/驗收/3.2-故事地圖.png`
+
+## 4. 簡報產出（ppt-master）
+
+- [x] 4.1 [after: 1.1, 3.2] 撰寫 `agent/交接與樣品.md`，落實設計「只用 ppt-master 一個渲染工具」「5 頁樣品批註後才量產」與需求「Handoff package」（產出 `03-ppt-master-交接包.md`，含中繼稿、03 號規格的字級階梯與禁令、5 頁樣品頁碼）、「Five-slide style sample」（挑至少 4 種不同版型、頁數不足 5 頁時全做、啟動 `svg_editor` 並給出 localhost 網址）。驗證：用 BNI 案例實跑，產出 5 頁 SVG，ego-browser 截圖預覽頁存 `docs/驗收/4.1-樣品預覽.png`
+- [x] 4.2 [after: 4.1] 在 `agent/交接與樣品.md` 加入需求「Annotation review loop」：使用者在預覽頁改顏色／字體／位置、插入照片／SVG icon／幾何圖形、寫批註後，Agent 讀回並修改；使用者說「風格確定」才寫入 `spec_lock.md`；預覽打不開時改匯出 PNG 並接受文字回饋。驗證：在 BNI 樣品第 2 頁寫一則批註「標題改極簡、旁邊放 icon」，確認修改後 SVG 有對應變化（`git diff` 該頁 SVG），並模擬預覽失敗確認有 PNG 產出
+- [x] 4.3 [after: 4.2] 撰寫 `agent/量產與交付.md` 與檢查腳本 `scripts/check_pptx.py`（先寫測試），落實需求「Full production and export」：依 `spec_lock.md` 產出剩下的頁、跑 ppt-master 品質檢查、匯出 `04-<簡報名>.pptx`。驗證：`python3 scripts/check_pptx.py <pptx>` 回報每頁可編輯文字框 ≥ 1、講者備忘錄非空、無整頁圖片，exit 0
+- [x] 4.4 [after: 4.3] 落實需求「Slide content grounded in SSOT」：先寫 `scripts/test_check_grounding.py` 紅燈測試（至少：捏造百分比被抓、捏造分鐘數被抓、SSOT 內的數字通過、頁碼不算），再實作 `scripts/check_grounding.py`；`agent/交接與樣品.md` 與 `agent/量產與交付.md` 加入「投影片文字只能來自中繼稿或使用者檔案，內容少就留白」與「交付前必跑 check_grounding.py 且 exit 0」。驗證：用第一次量產的 `4.3-小狗日常.pptx` 跑 check_grounding 應失敗並列出 45%、15 分鐘等；重新量產後 check_grounding 與 check_pptx 皆 exit 0，PM 逐頁對照中繼稿無自加內容
+
+## 5. 安裝
+
+- [x] 5.1 [after: 1.1, 1.2] 撰寫 `INSTALL-FOR-AI.md`，落實設計「安裝靠「AI 讀說明書」而非寫死兩套腳本」與需求「AI-readable install guide」（判斷作業系統、檢查 Python 3 與 git、依 `ppt-master.lock` 下載、安裝依賴、建立 `~/.b2b-slide/` 與 `~/b2b-slide-簡報/`、跑自我測試、輸出一行結果）、需求「Safe failure」（缺 Python／git 或下載失敗時停止、不留半套資料夾、不自行要求系統管理員權限）。驗證：用 `HOME=<scratch 暫存家目錄>` 讓 Claude Code 照說明書安裝一次成功；再把 PATH 去掉 python3 重跑一次，確認停止訊息正確且 `<scratch>/.b2b-slide` 不存在
+- [x] 5.2 [after: 5.1] 撰寫 `install.sh`（macOS）與 `install.ps1`（Windows），落實需求「Terminal one-liners」，步驟與 `INSTALL-FOR-AI.md` 一致。驗證：`HOME=<scratch> bash install.sh` 成功且自我測試通過；`install.ps1` 若本機有 `pwsh` 則實跑，沒有則標 unverified 並列入上課前 Windows 學生試裝清單 `docs/windows-試裝紀錄.md`
+- [x] 5.3 [after: 5.2] 落實需求「No author-machine dependencies」：掃描所有出貨檔案不含老魚本機路徑。驗證：`grep -rn "/Users/fishtv" --exclude-dir=.git --exclude-dir=docs/spectra --exclude-dir=.claude .` 0 筆
+
+## 6. 安裝頁、端到端驗收與上線
+
+- [x] 6.1 [after: 5.2] 製作 `site/index.html`，落實設計「安裝頁用 GitHub Pages」與需求「Public install page content」：Claude App 下載連結、可一鍵複製的安裝句、macOS／Windows 指令、開始第一份簡報的第一句話、常見問題（沒有 Python、卡住怎麼辦）；淺色底、SVG 圖示、無 Emoji。驗證：本機開啟後用 ego-browser 截圖桌面與 375px 寬兩種畫面存 `docs/驗收/6.1-*.png`，點每個複製按鈕確認剪貼簿內容，確認 375px 無水平捲軸
+- [x] 6.2 [after: 2.2, 4.3, 5.3] 端到端驗收：用全新暫存家目錄安裝後，以 BNI 案例當回答腳本完整跑一輪（訪談 → 中繼稿 → 故事地圖 → 5 頁樣品 → 完整 PPTX），產出全部存到 `~/Downloads/b2b-slide-驗收/`；再用 Codex CLI 跑到中繼稿階段一次確認跨模型可用。另實測放照片流程：在樣品階段把一張照片拖進對話並要求放到指定頁，確認照片存進簡報資料夾、出現在預覽頁與最終 PPTX。驗證：`check_ssot.py` 與 `check_pptx.py` 皆 exit 0、逐字稿問號數檢查通過；Gemini CLI 未實測則標 unverified
+- [ ] 6.3 [after: 6.1, 6.2] 上線（建立公開 repo 前先取得老魚同意）：建立 github.com/fishtvlvoe/b2b-slide 公開 repo 並推送、開啟 GitHub Pages 指向 `site/`；落實設計「舊簡報師 repo 只標示停用」：`Awesome-slides-master` README 開頭改為停用說明並連到 b2b-slide，`~/.claude/agent-repos.json` 的簡報師條目標註停用並新增 b2b-slide 條目。驗證：`curl -o /dev/null -w "%{http_code}" https://fishtvlvoe.github.io/b2b-slide/` 回 200、安裝頁的 curl 一行指令實跑成功、舊 repo README 線上版顯示停用說明

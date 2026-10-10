@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 商務簡報 b2b-slide - 公開安裝說明</title>
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-hover: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #0F172A;
+      --text-muted: #475569;
+      --border: #E2E8F0;
+      --border-focus: #93C5FD;
+      --code-bg: #F1F5F9;
+      --danger-bg: #FEF2F2;
+      --danger-border: #FECACA;
+      --danger-text: #991B1B;
+      --success-bg: #F0FDF4;
+      --success-border: #BBF7D0;
+      --success-text: #166534;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: break-word;
+    }
+
+    a, code, pre {
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    header {
+      margin-bottom: 36px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .badge-primary {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #DBEAFE;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .icon-title {
+      width: 24px;
+      height: 24px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Requirements */
+    .req-list {
+      list-style: none;
+      display: grid;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .req-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .req-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .req-link {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 500;
+      text-underline-offset: 3px;
+    }
+
+    .req-link:hover {
+      color: var(--primary-hover);
+    }
+
+    .alert-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-danger {
+      background-color: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .alert-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Install block */
+    .install-card {
+      background: #FAFAFA;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .install-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .install-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .install-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .code-container {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .code-text {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      align-self: flex-end;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.98);
+    }
+
+    .copy-btn.copied {
+      background: #059669;
+    }
+
+    .copy-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Steps */
+    .flow-steps {
+      display: grid;
+      gap: 14px;
+    }
+
+    .flow-step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: #F8FAFC;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      background: var(--primary);
+      color: #FFF;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .step-name {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .step-desc {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Support matrix */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .matrix-col {
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .matrix-col-support {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+
+    .matrix-col-unsupported {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+    }
+
+    .matrix-header {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .matrix-col-support .matrix-header {
+      color: var(--success-text);
+    }
+
+    .matrix-col-unsupported .matrix-header {
+      color: var(--danger-text);
+    }
+
+    .matrix-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .matrix-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .matrix-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* FAQ */
+    .faq-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      background: #FAFAFA;
+    }
+
+    .faq-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .faq-q-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .faq-a {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding-left: 26px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* 375px mobile adaptations */
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px 14px 40px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+
+      .section {
+        padding: 18px 14px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+      }
+
+      .section-title {
+        font-size: 17px;
+        margin-bottom: 14px;
+      }
+
+      .matrix-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .code-container {
+        padding: 12px;
+      }
+
+      .copy-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge badge-primary">
+        <svg class="req-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        AI 商務簡報
+      </div>
+      <h1>AI 商務簡報 b2b-slide</h1>
+      <p class="subtitle">跟 AI 對話 30 到 60 分鐘，做出能直接上台、文字可以改的商務簡報</p>
+    </header>
+
+    <!-- 區塊 1：你需要 -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        你需要具備的環境
+      </h2>
+      <ul class="req-list">
+        <li class="req-item">
+          <svg class="req-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>自己的電腦</strong>：支援 Mac（macOS）或 Windows 作業系統。
+          </div>
+        </li>
+        <li class="req-item">
+          <svg class="req-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>Claude 電腦版 App</strong>：請至官方頁面下載並安裝：<a class="req-link" href="https://claude.ai/download" target="_blank" rel="noopener noreferrer">https://claude.ai/download</a>。
+          </div>
+        </li>
+        <li class="req-item">
+          <svg class="req-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>Python 3.10 以上版本</strong>：請至官方頁面下載安裝：<a class="req-link" href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">https://www.python.org/downloads/</a>（Windows 安裝時請務必勾選「Add Python to PATH」）。
+          </div>
+        </li>
+      </ul>
+
+      <div class="alert-box alert-danger">
+        <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <div>
+          <strong>特別提醒：</strong>網頁版與手機版 Claude 不能用。本工具需要電腦端執行環境與本機檔案讀寫權限，必須使用 Claude 電腦版 App。
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 2：安裝方式一（推薦） -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        安裝方式一（推薦，不用會終端機）
+      </h2>
+      <div class="install-card">
+        <div class="install-card-title">
+          <span>打開 Claude 電腦版 App 貼上指令</span>
+          <span class="badge badge-primary">零指令基礎</span>
+        </div>
+        <p class="install-desc">打開 Claude 電腦版 App 的「Code」分頁，複製並貼上以下這句話給 AI，AI 便會自動閱讀手冊完成安裝：</p>
+        <div class="code-container">
+          <div class="code-text" id="cmd-ai">請照 https://github.com/fishtvlvoe/b2b-slide 的 INSTALL-FOR-AI.md 幫我安裝 b2b-slide</div>
+          <button type="button" class="copy-btn" onclick="copySnippet('cmd-ai', this)" aria-label="複製安裝指令">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+              <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+            </svg>
+            複製
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 3：安裝方式二（會用終端機） -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
+        </svg>
+        安裝方式二（會用終端機）
+      </h2>
+
+      <div class="install-card">
+        <div class="install-card-title">
+          <span>Mac（打開 Terminal 終端機執行）</span>
+        </div>
+        <div class="code-container">
+          <div class="code-text" id="cmd-mac">curl -fsSL https://raw.githubusercontent.com/fishtvlvoe/b2b-slide/main/install.sh | bash</div>
+          <button type="button" class="copy-btn" onclick="copySnippet('cmd-mac', this)" aria-label="複製 Mac 安裝指令">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+              <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+            </svg>
+            複製
+          </button>
+        </div>
+      </div>
+
+      <div class="install-card">
+        <div class="install-card-title">
+          <span>Windows（打開 PowerShell 執行）</span>
+        </div>
+        <div class="code-container">
+          <div class="code-text" id="cmd-win">irm https://raw.githubusercontent.com/fishtvlvoe/b2b-slide/main/install.ps1 | iex</div>
+          <button type="button" class="copy-btn" onclick="copySnippet('cmd-win', this)" aria-label="複製 Windows 安裝指令">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+              <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+            </svg>
+            複製
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 4：開始第一份簡報 -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        開始第一份簡報
+      </h2>
+      <p class="install-desc">安裝完成後，在 Claude 電腦版 App 打開你的工作資料夾 <code>b2b-slide-簡報</code>，直接在對話框輸入：</p>
+      
+      <div class="code-container" style="margin-bottom: 20px;">
+        <div class="code-text" id="cmd-start">我要做商務簡報</div>
+        <button type="button" class="copy-btn" onclick="copySnippet('cmd-start', this)" aria-label="複製開始文字">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+          </svg>
+          複製
+        </button>
+      </div>
+
+      <div class="flow-steps">
+        <div class="flow-step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-name">訪談</div>
+            <div class="step-desc">AI 提出針對性商務問題，釐清您的簡報情境、聽眾身份、痛點與核心訴求。</div>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-name">中繼稿確認</div>
+            <div class="step-desc">提煉出條理分明的事實清單與論點大綱，由您檢視確認，確保資訊無遺漏、無虛構。</div>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-name">故事地圖</div>
+            <div class="step-desc">規劃每一頁投影片的邏輯流向、頁面主標與說服層次，確保整體脈絡緊湊。</div>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-name">5 頁樣品批註</div>
+            <div class="step-desc">先行產出 5 頁實際版面樣品，供您在預覽頁審視排版與視覺比重，隨時提出調整建議。</div>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <div class="step-name">完整 PPTX</div>
+            <div class="step-desc">確認樣品滿意後，正式生成全套原生 PowerPoint 簡報檔，字型、文字與版面均可自由修改。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 5：支援的簡報類型 -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        支援的簡報類型
+      </h2>
+      <div class="matrix-grid">
+        <div class="matrix-col matrix-col-support">
+          <div class="matrix-header">
+            <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            支援的簡報
+          </div>
+          <ul class="matrix-list">
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              客戶提案（商業解決方案）
+            </li>
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              BNI 專題（商會引薦簡報）
+            </li>
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              公司／產品介紹（業務推廣）
+            </li>
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              合作邀約（異業戰略結盟）
+            </li>
+          </ul>
+        </div>
+
+        <div class="matrix-col matrix-col-unsupported">
+          <div class="matrix-header">
+            <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+            不支援的類型
+          </div>
+          <ul class="matrix-list">
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              內部報告（例行週會、日常進度匯報）
+            </li>
+            <li class="matrix-item">
+              <svg class="matrix-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              課程簡報（教學培訓、長篇課綱講義）
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 6：常見問題 -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg class="icon-title" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        常見問題
+      </h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">
+            <svg class="faq-q-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+            </svg>
+            沒有 Python 怎麼辦？
+          </div>
+          <div class="faq-a">
+            請前往 Python 官方下載頁（<a class="req-link" href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">https://www.python.org/downloads/</a>）下載最新版安裝程式。特別提醒 Windows 使用者：安裝開始時，請務必勾選畫面下方的「Add Python to PATH」選項，安裝完成後重新開啟 Claude App 即可。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <svg class="faq-q-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+            </svg>
+            安裝卡住怎麼辦？
+          </div>
+          <div class="faq-a">
+            本工具安裝程序具有暫存隔離與自我保護設計，所有安裝動作都在獨立暫存資料夾中進行，自我測試完全通過後才會替換。如果因為網路波動中途卡住，直接再次貼上安裝指令重新執行即可；即便安裝失敗，舊有的配置與簡報檔案也會完整保留，不會受損。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <svg class="faq-q-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/>
+            </svg>
+            預覽頁為什麼是簡體字？
+          </div>
+          <div class="faq-a">
+            預覽檢視器採用了底層開源排版引擎作者的外框介面，該檢視器本身的標籤為原作者介面；但這完全不影響您的簡報產出，AI 為您製作的訪談、中繼稿、文字內容與最終匯出的 PowerPoint 檔案，全部均為正體繁體中文。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <svg class="faq-q-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+            </svg>
+            怎麼放自己的照片？
+          </div>
+          <div class="faq-a">
+            在「5 頁樣品批註」或製作階段，直接把您的照片檔案拖曳放進 Claude 電腦版 App 的對話框中，並告訴 AI「請把這張照片放到第 X 頁」，AI 就會自動將照片儲存至簡報專案目錄，並精確嵌入到對應的投影片版面中。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <svg class="faq-q-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.047a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.608-1.286z" clip-rule="evenodd"/>
+            </svg>
+            怎麼更新？
+          </div>
+          <div class="faq-a">
+            更新方式非常簡單，只需重新在 Claude 電腦版 App 貼上一次安裝句子（<code>請照 https://github.com/fishtvlvoe/b2b-slide 的 INSTALL-FOR-AI.md 幫我安裝 b2b-slide</code>）即可。系統會全自動拉取最新版本並執行自我測試，只有測試通過才會替換；若過程中有任何中斷或失敗，舊版本依然安全保留運作。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>專案開源庫：<a href="https://github.com/fishtvlvoe/b2b-slide" target="_blank" rel="noopener noreferrer">github.com/fishtvlvoe/b2b-slide</a></p>
+      <p style="margin-top: 6px; font-size: 12px; color: #94A3B8;">&copy; 2026 b2b-slide. </p>
+    </footer>
+  </div>
+
+  <script>
+    function copySnippet(elementId, btnElement) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+
+      navigator.clipboard.writeText(text).then(function() {
+        const originalHTML = btnElement.innerHTML;
+        btnElement.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" style="width:15px;height:15px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>已複製';
+        btnElement.classList.add('copied');
+
+        setTimeout(function() {
+          btnElement.innerHTML = originalHTML;
+          btnElement.classList.remove('copied');
+        }, 2000);
+      }).catch(function(err) {
+        console.error('複製失敗：', err);
+      });
+    }
+  </script>
+</body>
+</html>

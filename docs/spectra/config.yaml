@@ -1,0 +1,23 @@
+schema: spec-driven
+
+context: |
+  專案：b2b-slide（AI 商務簡報 Agent），公開 repo github.com/fishtvlvoe/b2b-slide（尚未建立）。
+  定位：思維引導型商務簡報顧問 Agent，不是一鍵生成套版工具。透過一題一問訪談，把使用者腦中的商業想法
+  依「破例感官」與「四步法（結論 → 問題 → 做法 → 誰符合）」收斂成中繼 Markdown（SSOT），
+  再交給 ppt-master（github.com/hugohe3/ppt-master，MIT，鎖定實測版本）產出原生可編輯 PPTX。
+  規格來源：根目錄 AGENTS.md、01-CORE-METHODOLOGY.md、02-INTERVIEW-ENGINE.md、03-PRESENTATION-SPEC.md、
+  04-CASE-PR-AGENCY-AND-BNI.md。
+  交付形態：純 Markdown 的 skill／提示詞＋安裝說明書＋安裝腳本＋HTML 安裝頁；不寫後端、不做網頁服務。
+  執行環境：使用者自己的電腦（Claude 電腦版 App 的 Code 分頁或終端機 CLI：Claude Code / Codex / Gemini），
+  需本機 Python；網頁版與一般聊天模式不支援。macOS 與 Windows 都支援。
+  語言：所有給使用者看的文字用繁體中文；程式識別字維持英文。
+
+rules:
+  proposal:
+    - 寫明「不做」清單（內部報告、課程簡報、Kimi 提示詞、簡報大師、網頁版支援）
+  design:
+    - 每個決策附「為什麼」與被否決的替代方案
+    - 寫明 in scope / out of scope
+  tasks:
+    - 每個任務附可實跑的驗證方式（指令或可檢查的產出檔）
+    - 單一任務不超過 1 小時
