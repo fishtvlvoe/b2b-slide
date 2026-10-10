@@ -278,6 +278,73 @@ test_reinstall_failure_keeps_old() {
     fi
 }
 
+# -------------------------------------------------------------
+# 測試 7: test_venv_entrypoint_relocated
+# 情境：原子搬移後，venv/bin/pip 不得殘留 .b2b-slide.new 路徑
+# -------------------------------------------------------------
+test_venv_entrypoint_relocated() {
+    local test_name="test_venv_entrypoint_relocated"
+    local tmp
+    tmp="$(mktemp -d)"
+    local fake_source
+    fake_source="$(mktemp -d)"
+    setup_fake_repo "$fake_source"
+
+    local temp_lock
+    temp_lock="$(mktemp)"
+    echo "tag=v6.7.0" > "$temp_lock"
+
+    B2B_SLIDE_LOCK_FILE="$temp_lock" B2B_SLIDE_SKIP_PIP=1 B2B_SLIDE_REPO_SOURCE="$REPO_ROOT" B2B_SLIDE_PPT_MASTER_SOURCE="$fake_source" HOME="$tmp" bash "$INSTALL_SH" >/dev/null 2>&1 || true
+
+    local pip_bin="$tmp/.b2b-slide/venv/bin/pip"
+    if [ -x "$pip_bin" ] && ! grep -Fq "$tmp/.b2b-slide.new" "$pip_bin" && "$pip_bin" --version >/dev/null 2>&1; then
+        echo "[PASS] $test_name"
+        ((passed++))
+    else
+        echo "[FAIL] $test_name: venv/bin/pip 搬移後不可執行或仍指向暫存路徑"
+        ((failed++))
+    fi
+
+    rm -f "$temp_lock"
+    rm -rf "$tmp" "$fake_source"
+}
+
+# -------------------------------------------------------------
+# 測試 8: test_local_source_replaces_generated_dirs
+# 情境：本機來源帶有舊 ppt-master/、venv/ 時，仍能重新安裝
+# -------------------------------------------------------------
+test_local_source_replaces_generated_dirs() {
+    local test_name="test_local_source_replaces_generated_dirs"
+    local tmp
+    tmp="$(mktemp -d)"
+    local local_source="$tmp/source"
+    mkdir -p "$local_source"
+    cp -R "$REPO_ROOT/." "$local_source/"
+    mkdir -p "$local_source/ppt-master" "$local_source/venv"
+    echo stale > "$local_source/ppt-master/stale.txt"
+    echo stale > "$local_source/venv/stale.txt"
+
+    local fake_source
+    fake_source="$(mktemp -d)"
+    setup_fake_repo "$fake_source"
+    local temp_lock
+    temp_lock="$(mktemp)"
+    echo "tag=v6.7.0" > "$temp_lock"
+
+    B2B_SLIDE_LOCK_FILE="$temp_lock" B2B_SLIDE_SKIP_PIP=1 B2B_SLIDE_REPO_SOURCE="$local_source" B2B_SLIDE_PPT_MASTER_SOURCE="$fake_source" HOME="$tmp/home" bash "$INSTALL_SH" >/dev/null 2>&1 || true
+
+    if [ -d "$tmp/home/.b2b-slide/ppt-master/.git" ] && [ -x "$tmp/home/.b2b-slide/venv/bin/python" ]; then
+        echo "[PASS] $test_name"
+        ((passed++))
+    else
+        echo "[FAIL] $test_name: 本機來源的舊依賴目錄阻擋重新安裝"
+        ((failed++))
+    fi
+
+    rm -f "$temp_lock"
+    rm -rf "$tmp" "$fake_source"
+}
+
 # 執行測試套件
 echo "=== 開始執行 E 組測試 (tests/test_install.sh) ==="
 test_no_python_stops_clean || true
@@ -286,6 +353,8 @@ test_workspace_no_spectra || true
 test_no_author_paths || true
 test_download_fail_rollback || true
 test_reinstall_failure_keeps_old || true
+test_venv_entrypoint_relocated || true
+test_local_source_replaces_generated_dirs || true
 
 echo "通過 $passed / 失敗 $failed"
 

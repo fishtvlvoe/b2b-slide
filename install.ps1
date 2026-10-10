@@ -84,6 +84,15 @@ try {
     if (Test-Path $repoSource) {
         New-Item -ItemType Directory -Force -Path $STAGING_DIR | Out-Null
         Copy-Item -Path "$repoSource\*" -Destination $STAGING_DIR -Recurse -Force
+        # 本機來源可能是已安裝目錄；依賴目錄必須重新依鎖定版本建立。
+        foreach ($generatedDir in @(
+            (Join-Path $STAGING_DIR "ppt-master"),
+            (Join-Path $STAGING_DIR "venv")
+        )) {
+            if (Test-Path $generatedDir) {
+                Remove-Item -Recurse -Force $generatedDir
+            }
+        }
     } else {
         git clone -q $repoSource $STAGING_DIR
         if ($LASTEXITCODE -ne 0) {
