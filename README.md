@@ -2,11 +2,15 @@
 
 AI 商務簡報，透過一題一問訪談做出原生可編輯的 PPTX。
 
+**安裝說明網頁（建議先看這裡）：https://fishtvlvoe.github.io/b2b-slide/**
+
 ## 你需要具備的環境
 
 - **自己的電腦**：支援 Mac（macOS）或 Windows 作業系統。
-- **Claude 電腦版 App**：請至官方頁面下載並安裝：https://claude.ai/download 。
-  - 特別提醒：網頁版與手機版 Claude 不能用。本工具需要電腦端執行環境與本機檔案讀寫權限，必須使用 Claude 電腦版 App。
+- **一個能讀寫電腦檔案的 AI 工具**：
+  - 推薦 Claude 電腦版 App（https://claude.ai/download ），已完整實測。
+  - Codex、Antigravity 等能在電腦上執行程式的 AI 工具，也能用同一句話安裝與使用，但尚未完整實測。
+  - 特別提醒：網頁版、手機版的 AI 聊天都不能用（包含 Claude、ChatGPT 的網頁版）。本工具需要在你的電腦上讀寫檔案、執行程式。
 - **Python 3.10 以上版本**：請至官方頁面下載安裝：https://www.python.org/downloads/ （Windows 安裝時請務必勾選「Add Python to PATH」）。
 
 ## 兩種安裝方式
