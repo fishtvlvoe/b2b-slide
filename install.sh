@@ -65,6 +65,8 @@ fi
 if [ -d "$REPO_SOURCE" ]; then
     mkdir -p "$STAGING_DIR"
     cp -R "$REPO_SOURCE/." "$STAGING_DIR/" || cleanup_on_error "無法複製本機 repo ($REPO_SOURCE)"
+    # 本機來源可能是已安裝目錄；依賴目錄必須重新依鎖定版本建立，不能直接拿來 clone 覆蓋。
+    rm -rf "$STAGING_DIR/ppt-master" "$STAGING_DIR/venv"
 else
     git clone -q "$REPO_SOURCE" "$STAGING_DIR" || cleanup_on_error "無法 clone repo ($REPO_SOURCE)"
 fi
@@ -99,6 +101,33 @@ if [ "${B2B_SLIDE_SKIP_PIP:-0}" != "1" ]; then
     else
         "$STAGING_DIR/venv/bin/pip" install -q python-pptx || cleanup_on_error "python-pptx 套件安裝失敗"
     fi
+fi
+
+# 原子搬移後，pip 等入口腳本仍須指向正式目錄，不能殘留暫存路徑。
+if ! "$STAGING_DIR/venv/bin/python" - "$STAGING_DIR/venv" "$TOOL_DIR/venv" <<'PY'
+import sys
+from pathlib import Path
+
+staging_venv = sys.argv[1]
+final_venv = sys.argv[2]
+bin_dir = Path(staging_venv) / "bin"
+
+for script in bin_dir.iterdir():
+    if not script.is_file() or script.is_symlink():
+        continue
+    try:
+        content = script.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        continue
+    first_line, separator, remainder = content.partition("\n")
+    if first_line.startswith("#!") and staging_venv in first_line:
+        script.write_text(
+            first_line.replace(staging_venv, final_venv) + separator + remainder,
+            encoding="utf-8",
+        )
+PY
+then
+    cleanup_on_error "修正虛擬環境腳本路徑失敗"
 fi
 
 # 8. 建立學生工作區（已存在檔案不覆蓋使用者修改，改名備份成 .bak）
